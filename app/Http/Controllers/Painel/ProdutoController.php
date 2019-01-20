@@ -22,9 +22,11 @@ class ProdutoController extends Controller
      */
     public function index()
     {
+        $title = 'Listagem dos produtos';
+
         $products = $this->product->all();
 
-        return view('painel.products.index', compact('products'));
+        return view('painel.products.index', compact('products', 'title'));
     }
 
     /**
@@ -34,7 +36,11 @@ class ProdutoController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'Cadastrar novo produto';
+
+        $categories = ['eletronicos', 'moveis','limpeza', 'banho'];
+
+        return view('painel.products.create', compact('title', 'categories'));
     }
 
     /**
@@ -45,7 +51,7 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return 'Cadastrado com sucesso!';
     }
 
     /**
@@ -95,7 +101,7 @@ class ProdutoController extends Controller
 
     public function tests()
     {
-
+        /*
         $insert = $this->product->create([
             'name'          => 'Nome do produto2',
             'number'        => 123456,
@@ -109,6 +115,7 @@ class ProdutoController extends Controller
         } else {
             return ' Fala ao inserir';
         }
+        */
 
 
 
@@ -124,5 +131,34 @@ class ProdutoController extends Controller
         } else {
             return ' Fala ao inserir';
         }*/
+        /*
+        $prod = $this->product->findOrFail(5);
+        $prod->name = 'Update';
+        $prod->number = 79789;
+        $prod->active = true;
+        $prod->category = 'eletronicos';
+        $prod->description = 'DescUpdate';
+        $update = $prod->save();
+        if($update){
+            return 'Atualizado com sucesso';
+        } else {
+            return ' Falha ao atualizar';
+        }
+        */
+        
+        $update = $this->product->where('number', 123456)->update([
+            'name'          => 'Nome do update',
+            'number'        => 123456,
+            'active'        => false,
+            'category'      => 'eletronicos',
+            'description'   => 'Description vem aqui',
+        ]);
+        if($update){
+            return 'Atualizado com sucesso2';
+        } else {
+            return ' Falha ao atualizar';
+        }
+        
+
     }
 }
