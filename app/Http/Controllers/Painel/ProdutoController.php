@@ -51,7 +51,26 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        return 'Cadastrado com sucesso!';
+        /* dd($request->all());
+        dd($request->only(['name', 'number']));
+        dd($request->except(['_token', 'category']));
+        dd($request->input('name')); */
+
+        $dataForm = $request->all();
+
+        $dataForm['active'] = !isset($dataForm['active']) ? 0 : 1;
+
+        $this->validate($request, $this->product->rules);
+
+        $insert = $this->product->create($dataForm);
+
+        if($insert)
+        {
+            return redirect()->route('produtos.index');
+        } else
+        {
+            return redirect()->back();
+        }
     }
 
     /**
@@ -145,7 +164,7 @@ class ProdutoController extends Controller
             return ' Falha ao atualizar';
         }
         */
-        
+
         $update = $this->product->where('number', 123456)->update([
             'name'          => 'Nome do update',
             'number'        => 123456,
@@ -158,7 +177,7 @@ class ProdutoController extends Controller
         } else {
             return ' Falha ao atualizar';
         }
-        
+
 
     }
 }

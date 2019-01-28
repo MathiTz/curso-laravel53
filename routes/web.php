@@ -11,8 +11,10 @@
 |
 */
 
-Route::get('/painel/produtos/teste', 'Painel\ProdutoController@tests');
-Route::resource('/painel/produtos', 'Painel\ProdutoController');
+Route::group(['middleware' => ['web']], function(){
+	Route::get('/painel/produtos/teste', 'Painel\ProdutoController@tests');
+	Route::resource('/painel/produtos', 'Painel\ProdutoController');
+});
 
 Route::group(['namespace' => 'Site'], function(){
 	Route::get('/categoria/{id}', 'SiteController@categoria');
