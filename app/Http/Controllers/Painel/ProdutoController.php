@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Painel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Painel\Product;
-
+use App\Http\Requests\Painel\ProductFormRequest;
+use \Validator;
 class ProdutoController extends Controller
 {
     private $product;
@@ -40,7 +41,7 @@ class ProdutoController extends Controller
 
         $categories = ['eletronicos', 'moveis','limpeza', 'banho'];
 
-        return view('painel.products.create', compact('title', 'categories'));
+        return view('painel.products.create-edit', compact('title', 'categories'));
     }
 
     /**
@@ -60,7 +61,19 @@ class ProdutoController extends Controller
 
         $dataForm['active'] = !isset($dataForm['active']) ? 0 : 1;
 
-        $this->validate($request, $this->product->rules);
+        $validator = Validator::make($request->all(), [
+            'name'          => 'required|min:3|max:100',
+            'number'        => 'required|numeric',
+            'category'      => 'required|',
+            'description'   => 'min:3|max:1000',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()
+                        ->back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
 
         $insert = $this->product->create($dataForm);
 
@@ -92,7 +105,13 @@ class ProdutoController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = $this->product->findOrFail($id);
+
+        $title = 'Editar Produto: '.$product->name;
+
+        $categories = ['eletronicos', 'moveis','limpeza', 'banho'];
+
+        return view('painel.products.create-edit', compact('title', 'categories', 'product'));
     }
 
     /**
@@ -104,7 +123,7 @@ class ProdutoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+            return "Editando item ".$id;
     }
 
     /**
