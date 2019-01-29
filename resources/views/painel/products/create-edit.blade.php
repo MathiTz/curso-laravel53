@@ -28,10 +28,9 @@
 			<select class="form-control" name="category">
 				<option value="">Escolha a categoria</option>
 				@foreach($categories as $cat)
-					<option value="{{$cat}}">
-							@if (isset($product) && $product->category == $cat)
-								selected
-							@endif
+				<option value="{{$cat}}" @if (isset($product) && $product->category == $cat)
+					selected
+				@endif>
 						{{$cat}}</option>
 				@endforeach
 			</select>

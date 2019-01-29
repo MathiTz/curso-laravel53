@@ -123,7 +123,34 @@ class ProdutoController extends Controller
      */
     public function update(Request $request, $id)
     {
-            return "Editando item ".$id;
+            $dataForm = $request->all();
+
+            $product = $this->product->findOrFail($id);
+
+            $dataForm['active'] = !isset($dataForm['active']) ? 0 : 1;
+
+            $validator = Validator::make($request->all(), [
+                'name'          => 'required|min:3|max:100',
+                'number'        => 'required|numeric',
+                'category'      => 'required|',
+                'description'   => 'min:3|max:1000',
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()
+                            ->back()
+                            ->withErrors($validator)
+                            ->withInput();
+            }
+
+            $update = $product->update($dataForm);
+
+            if ($update)
+                return redirect()->route('produtos.index');
+            else
+                return redirect()
+                    ->route('produtos.edit', $id)
+                    ->with(['errors'  => 'Falha ao editar']);
     }
 
     /**
