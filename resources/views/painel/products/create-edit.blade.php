@@ -2,7 +2,11 @@
 
 @section('content')
 
-<h1 class="title-pg">Gestão Produto</h1>
+<h1 class="title-pg">
+	<a href="{{route('produtos.index')}}">Voltar
+	</a>
+	Gestão Produto: <b>{{$product->name ?? 'Novo'}}</b>
+</h1>
 
 	@if (isset($errors) && count($errors) > 0)
 		<div class="alert alert-danger">
@@ -13,32 +17,33 @@
 	@endif
 
 		@if(isset($product))
-			<form class="form-group" method="post" action="{{route('produtos.update', $product->id)}}">
-				{!! method_field('PUT') !!}
+			{{	Form::model($product, ['route'=>['produtos.update', $product->id], 'class' => 'form', 'method' => 'put'])	}}
 		@else
-			<form class="form-group" method="post" action="{{route('produtos.store')}}">
+			{{Form::open(['route'=>'produtos.store', 'class'=>'form'])}}
 		@endif
 
 		@csrf
-		<input class="form-control" type="text" name="name" placeholder="Nome:" value="{{$product->name ?? old('name')}}">
+		<div class="form-group">
+			{!! Form::text('name', null, ['class'=>'form-control', 'placeholder' => 'Nome:'])  !!}
+		</div>
 
-		<label for=""><input class="form-control" type="checkbox" name="active" value="1" @if( isset($product) && $product->active =='1') checked @endif>Ativo?</label>
+		<div class="form-group">
+			{{ Form::checkbox('active')}} Ativo?
+		</div>
 
-		<input class="form-control" type="text" name="number" placeholder="Números:" value="{{$product->number ?? old('number')}}">
-			<select class="form-control" name="category">
-				<option value="">Escolha a categoria</option>
-				@foreach($categories as $cat)
-				<option value="{{$cat}}" @if (isset($product) && $product->category == $cat)
-					selected
-				@endif>
-						{{$cat}}</option>
-				@endforeach
-			</select>
+		<div class="form-group">
+			{!! Form::text('number', null, ['class'=>'form-control', 'placeholder' => 'Número:'])  !!}
+		</div>
 
-		<textarea class="form-control" name="description" placeholder="Descrição" value="{{$product->description ?? old('description')}}">
-		</textarea>
+		<div class="form-group">
+			{{Form::select('category', $categories, null, ['class'=>'form-control'])}}
+		</div>
 
-		<button class="btn btn-primary">Enviar</button>
-	</form>
+		<div class="form-group">
+			{!! Form::textarea('description', null, ['class'=>'form-control', 'placeholder' => 'Descrição:'])  !!}
+		</div>
+
+			{{Form::submit('Enviar', ['class'=>'btn btn-primary'])}}
+	{{Form::close()}}
 
 @endsection

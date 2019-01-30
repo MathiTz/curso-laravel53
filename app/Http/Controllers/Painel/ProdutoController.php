@@ -136,7 +136,8 @@ class ProdutoController extends Controller
                 'description'   => 'min:3|max:1000',
             ]);
 
-            if ($validator->fails()) {
+            if ($validator->fails())
+            {
                 return redirect()
                             ->back()
                             ->withErrors($validator)
