@@ -10,6 +10,7 @@ use \Validator;
 class ProdutoController extends Controller
 {
     private $product;
+    private $totalPage = 3;
 
     public function __construct(Product $product)
     {
@@ -25,7 +26,7 @@ class ProdutoController extends Controller
     {
         $title = 'Listagem dos produtos';
 
-        $products = $this->product->all();
+        $products = $this->product->paginate($this->totalPage);
 
         return view('painel.products.index', compact('products', 'title'));
     }
@@ -94,7 +95,11 @@ class ProdutoController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = $this->product->findOrFail($id);
+
+        $title = 'Produto: '.$product->name;
+
+        return view('painel.products.show', compact('product', 'title'));
     }
 
     /**
@@ -162,69 +167,22 @@ class ProdutoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = $this->product->findOrFail($id);
+
+        $delete = $product->delete();
+
+        if ($delete)
+        {
+            return redirect()->route('produtos.index');
+        }
+        else
+        {
+            return redirect()->back()->with(['errors' => 'Falha ao deletar']);
+        }
     }
 
     public function tests()
     {
-        /*
-        $insert = $this->product->create([
-            'name'          => 'Nome do produto2',
-            'number'        => 123456,
-            'active'        => false,
-            'category'      => 'eletronicos',
-            'description'   => 'Description vem aqui',
-        ]);
-
-        if($insert){
-            return 'Inserido com sucesso';
-        } else {
-            return ' Fala ao inserir';
-        }
-        */
-
-
-
-        /*$prod = $this->product;
-        $prod->name = 'Nome do Produto';
-        $prod->number = 123123;
-        $prod->active = true;
-        $prod->category = 'eletronicos';
-        $prod->description = 'Description do produto aqui';
-        $insert = $prod->save();
-        if($insert){
-            return 'Inserido com sucesso';
-        } else {
-            return ' Fala ao inserir';
-        }*/
-        /*
-        $prod = $this->product->findOrFail(5);
-        $prod->name = 'Update';
-        $prod->number = 79789;
-        $prod->active = true;
-        $prod->category = 'eletronicos';
-        $prod->description = 'DescUpdate';
-        $update = $prod->save();
-        if($update){
-            return 'Atualizado com sucesso';
-        } else {
-            return ' Falha ao atualizar';
-        }
-        */
-
-        $update = $this->product->where('number', 123456)->update([
-            'name'          => 'Nome do update',
-            'number'        => 123456,
-            'active'        => false,
-            'category'      => 'eletronicos',
-            'description'   => 'Description vem aqui',
-        ]);
-        if($update){
-            return 'Atualizado com sucesso2';
-        } else {
-            return ' Falha ao atualizar';
-        }
-
 
     }
 }
